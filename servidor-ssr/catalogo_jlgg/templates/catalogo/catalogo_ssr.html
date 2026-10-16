@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>La Labora Mariscos — Catálogo (SSR)</title>
+  <style>
+    /* Estilos mínimos con la paleta de marca de La Labora Mariscos */
+    body { font-family: system-ui, sans-serif; background: #F8FAFC; color: #083344; margin: 2rem auto; max-width: 720px; padding: 0 1rem; }
+    h1 { color: #0891B2; margin-bottom: .25rem; }
+    h2 { color: #FB7185; border-bottom: 2px solid #FB7185; padding-bottom: .25rem; margin-top: 2rem; }
+    .nota { color: #3d6573; }
+    ul { list-style: none; padding: 0; }
+    li { background: #fff; border: 1px solid #d7e0dc; border-radius: 8px; padding: .75rem 1rem; margin-bottom: .5rem; display: flex; justify-content: space-between; gap: 1rem; }
+    .precio { font-weight: bold; color: #0891B2; white-space: nowrap; }
+    .stock { color: #3d6573; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <h1>La Labora Mariscos</h1>
+  <p class="nota">Catálogo renderizado en el servidor (SSR). Haz "Ver código fuente" (Ctrl+U) y
+     compara: aquí SÍ aparecen los nombres y precios en el HTML crudo.</p>
+
+  <!-- la etiqueta regroup agrupa la lista por categoría (los productos ya vienen juntos por categoría) -->
+  {% regroup productos by categoria as grupos %}
+  {% for grupo in grupos %}
+    <h2>{{ grupo.grouper }}</h2>
+    <ul>
+      <!-- el bucle "for" recorre los productos de esta categoría que la vista (views.py) mandó en el contexto -->
+      {% for producto in grupo.list %}
+        <li>
+          <span>
+            <strong>{{ producto.nombre }}</strong><br>
+            <span class="stock">stock: {{ producto.stock }}</span>
+          </span>
+          <span class="precio">${{ producto.precio }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+</body>
+</html>

@@ -1,0 +1,5 @@
+# Django (servidor-ssr/) — nada de esto debe subirse al repositorio
+servidor-ssr/venv/
+servidor-ssr/db.sqlite3
+__pycache__/
+*.pyc
