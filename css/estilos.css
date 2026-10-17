@@ -141,3 +141,30 @@ button:hover { background: #067592; }
   .carrito-precio { grid-area: precio; justify-self: end; }
   .carrito-quitar { grid-area: quitar; justify-self: start; }
 }
+
+/* .filtros: botones para ver el catálogo por categoría (los crea csr.js) */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: .25rem 0 1rem;
+}
+.filtros button {
+  background: white;
+  color: #0891B2;
+  border: 2px solid #0891B2;
+  border-radius: 999px;
+  padding: .35rem 1rem;
+}
+.filtros button:hover { background: #e6f6fa; }
+.filtros button[aria-pressed="true"] { background: #0891B2; color: white; }
+
+/* título de cada categoría cuando se ven "Todos": ocupa todo el ancho de la cuadrícula */
+.categoria-titulo {
+  grid-column: 1 / -1;
+  margin: .75rem 0 0;
+  padding-bottom: .25rem;
+  font-size: 1.1rem;
+  color: #FB7185;
+  border-bottom: 2px solid #FB7185;
+}
