@@ -7,8 +7,9 @@
 
   <!-- PWA instalable -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0e6b5c">
-  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0891B2">
+  <link rel="icon" href="img/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="img/icon-192.png">
 
   <link rel="stylesheet" href="css/estilos.css">
 
@@ -48,6 +49,24 @@
       <p id="carrito-mensaje" class="mensaje"></p>
     </section>
 
+    <!-- ---- Sección 3: Notificaciones (notificaciones.js) ---- -->
+    <section>
+      <h2>Notificaciones</h2>
+      <p class="sucursal-info">Activa los avisos para saber cuándo se agrega tu pedido o se sincroniza tu carrito.</p>
+      <button id="btn-notificar" type="button">Activar notificaciones</button>
+      <p id="notificaciones-mensaje" class="mensaje"></p>
+    </section>
+
+    <!-- ---- Sección 4: Ubicación (geolocalizacion.js) ---- -->
+    <section>
+      <h2>Distancia a la sucursal</h2>
+      <p class="sucursal-info">Sucursal: <strong>La Labora Mariscos</strong>, Hermosillo, Sonora.</p>
+      <button id="btn-ubicacion" type="button">Usar mi ubicación</button>
+      <p id="ubicacion-mensaje" class="mensaje"></p>
+      <!-- Empieza oculto: geolocalizacion.js lo muestra cuando ya tiene tu ubicación -->
+      <div id="mapa-ruta" class="mapa" hidden></div>
+    </section>
+
     <!-- ---- Info de contacto (abajo de todo) ---- -->
     <section class="info-contacto">
       <p><strong>Horario:</strong> Martes a domingo 12:00pm - 8:00pm</p>
@@ -63,5 +82,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="js/geolocalizacion.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- Registro del Service Worker (en una sola línea, sin esperar al evento load) -->
+  <script>
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+  </script>
 </body>
 </html>

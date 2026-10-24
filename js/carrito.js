@@ -3,6 +3,8 @@
 // y sobrevive aunque cierres la pestaña o se vaya el internet.
 
 const CLAVE_CARRITO = "labora-mariscos-carrito";
+// Marca que avisa "hubo cambios en el carrito mientras no había internet"
+const CLAVE_PENDIENTE = "labora-mariscos-pendiente";
 
 // Lee el carrito guardado en localStorage (si no hay nada, regresa un array vacío)
 function leerCarrito() {
@@ -13,6 +15,8 @@ function leerCarrito() {
 // Guarda el array del carrito en localStorage (JSON.stringify lo convierte a texto)
 function guardarCarrito(carrito) {
   localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
+  // si el cambio ocurre sin internet, lo anotamos para enviarlo cuando regrese la conexión
+  if (!navigator.onLine) localStorage.setItem(CLAVE_PENDIENTE, "1");
 }
 
 // Agrega un producto al carrito (o le sube la cantidad si ya estaba)
@@ -28,6 +32,11 @@ function agregarAlCarrito(producto) {
 
   guardarCarrito(carrito);
   pintarCarrito();
+
+  // aviso útil: lo muestra notificaciones.js (solo si el usuario dio permiso)
+  if (typeof mostrarNotificacion === "function") {
+    mostrarNotificacion("Pedido agregado", `${producto.nombre} se agregó a tu carrito.`);
+  }
 }
 
 // Sube o baja la cantidad de un producto ya en el carrito con los botones +/-;
@@ -107,14 +116,33 @@ function sincronizarCarrito() {
     return;
   }
 
-  // Aquí iría: fetch("https://mi-api.com/carrito", { method: "POST", body: ... })
-  mensaje.textContent = "Carrito sincronizado con el servidor (simulado). ✓";
+  const carrito = leerCarrito();
+  if (carrito.length === 0) {
+    localStorage.removeItem(CLAVE_PENDIENTE);
+    mensaje.textContent = "Tu carrito está vacío: no hay nada que sincronizar.";
+    return;
+  }
+
+  // Aquí iría: fetch("https://mi-api.com/carrito", { method: "POST", body: JSON.stringify(carrito) })
+  localStorage.removeItem(CLAVE_PENDIENTE);
+
+  const piezas = carrito.reduce((suma, item) => suma + item.cantidad, 0);
+  const total = carrito.reduce((suma, item) => suma + item.precio * item.cantidad, 0);
+  mensaje.textContent = `Carrito sincronizado con el servidor (simulado): ${piezas} producto(s), $${total}. ✓`;
+
+  // además del mensaje en pantalla, avisamos con una notificación (si hay permiso)
+  if (typeof mostrarNotificacion === "function") {
+    mostrarNotificacion("Carrito sincronizado", `Se enviaron ${piezas} producto(s) por $${total}.`);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   pintarCarrito();
   document.getElementById("carrito-lista").addEventListener("click", manejarClicCarrito);
   document.getElementById("btn-sincronizar").addEventListener("click", sincronizarCarrito);
+
+  // si cambiaste el carrito sin internet y abres la app ya con conexión, se envía solo
+  if (navigator.onLine && localStorage.getItem(CLAVE_PENDIENTE)) sincronizarCarrito();
 
   // Estos dos eventos del navegador avisan cuando se pierde o regresa la conexión
   window.addEventListener("online", sincronizarCarrito);
