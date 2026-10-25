@@ -13,6 +13,31 @@ const SUCURSAL = {
   lon: -110.9559,
 };
 
+// Leaflet (la librería del mapa) viene de un CDN. Se descarga SOLO cuando el cliente
+// pide su ubicación y solo si hay internet: así la página abre sin pedir nada externo
+// y, sin conexión, no hay peticiones fallidas (ni errores rojos en la consola).
+const LEAFLET_CSS = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css";
+const LEAFLET_JS = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
+
+// Devuelve una promesa: true si Leaflet quedó listo para usarse, false si no se pudo.
+function cargarLeaflet() {
+  if (typeof L !== "undefined") return Promise.resolve(true); // ya estaba cargado
+  if (!navigator.onLine) return Promise.resolve(false); // sin internet ni lo intentamos
+
+  return new Promise((resolver) => {
+    const estilos = document.createElement("link");
+    estilos.rel = "stylesheet";
+    estilos.href = LEAFLET_CSS;
+    document.head.appendChild(estilos);
+
+    const script = document.createElement("script");
+    script.src = LEAFLET_JS;
+    script.onload = () => resolver(true);
+    script.onerror = () => resolver(false);
+    document.head.appendChild(script);
+  });
+}
+
 // Fórmula de Haversine: distancia en línea recta (km) entre dos puntos.
 // Se usa solo como respaldo si no se puede calcular la ruta real por calles
 // (sin internet, o si el servicio de ruteo no responde).
@@ -127,8 +152,8 @@ document.addEventListener("DOMContentLoaded", () => {
         mensaje.textContent = "Calculando la ruta hasta la sucursal…";
         const ruta = await obtenerRuta(latitude, longitude);
 
-        // Leaflet viene de un CDN: sin internet puede no estar disponible
-        const hayMapa = typeof L !== "undefined";
+        // el mapa solo se dibuja si hay internet (Leaflet y los cuadros del mapa vienen de la red)
+        const hayMapa = await cargarLeaflet();
         if (hayMapa) dibujarMapa(latitude, longitude, ruta ? ruta.coords : null);
 
         if (ruta) {
