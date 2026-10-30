@@ -33,9 +33,20 @@
     <section>
       <h2>Catálogo</h2>
 
-      <div id="catalogo" class="grid">
-        <p>Cargando catálogo…</p>
-      </div>
+      <!-- csr.js llena estos filtros; el contenedor ya existe para reservar su espacio -->
+      <div id="filtros-categoria" class="filtros" role="group" aria-label="Filtrar productos por categoría"></div>
+
+      <div id="catalogo" class="grid" aria-busy="true"></div>
+      <script>
+        // Esqueleto: tarjetas grises que reservan el espacio del catálogo mientras llegan los
+        // datos (así la página no "salta" cuando csr.js dibuja los productos reales).
+        document.getElementById("catalogo").innerHTML =
+          '<p class="solo-lectores" role="status">Cargando catálogo…</p>' +
+          ["", "", ""].map(() =>
+            '<h3 class="categoria-titulo" aria-hidden="true">&nbsp;</h3>' +
+            '<div class="producto producto--cargando" aria-hidden="true"><div class="producto__foto"></div><strong>&nbsp;</strong><span class="precio">&nbsp;&nbsp;&nbsp;&nbsp;</span><p>&nbsp;</p><button type="button" disabled tabindex="-1">Agregar al carrito</button></div>'.repeat(5)
+          ).join("");
+      </script>
     </section>
 
     <!-- ---- Sección 2: Carrito (carrito.js lo llena y lo guarda en localStorage) ---- -->

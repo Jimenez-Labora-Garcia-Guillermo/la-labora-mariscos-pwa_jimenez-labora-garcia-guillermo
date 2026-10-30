@@ -148,6 +148,27 @@ button:hover { background: #067592; }
   flex-wrap: wrap;
   gap: .5rem;
   margin: .25rem 0 1rem;
+  min-height: 2.6rem; /* reserva el espacio de una fila de botones mientras csr.js los crea */
+}
+
+/* esqueleto del catálogo: tarjetas grises con la misma estructura que las reales, para que
+   al llegar los datos no se mueva nada (evita el "salto de diseño", CLS, en Lighthouse) */
+.producto--cargando { pointer-events: none; }
+.producto--cargando .producto__foto { background: #e8f0f3; }
+.producto--cargando strong,
+.producto--cargando .precio,
+.producto--cargando p { background: #e8f0f3; color: transparent; border-radius: 4px; }
+.producto--cargando button,
+.producto--cargando button:hover { background: #e8f0f3; color: transparent; cursor: default; }
+
+/* texto solo para lectores de pantalla: no ocupa lugar en pantalla */
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 .filtros button {
   background: white;

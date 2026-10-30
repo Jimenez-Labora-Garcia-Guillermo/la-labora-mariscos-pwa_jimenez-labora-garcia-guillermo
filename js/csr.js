@@ -35,7 +35,8 @@ function crearTarjeta(producto) {
 //  - "Todos": los productos agrupados, con un título por cada categoría
 //  - una categoría: solo los productos de esa categoría
 function pintarCatalogo() {
-  contenedorCatalogo.innerHTML = "";
+  contenedorCatalogo.innerHTML = ""; // borra el esqueleto (o los productos anteriores)
+  contenedorCatalogo.removeAttribute("aria-busy");
   let ultimaCategoria = null;
 
   productosCatalogo
@@ -57,10 +58,8 @@ function crearFiltros() {
   // las categorías salen del propio catalogo.json (sin repetir y en el mismo orden)
   const categorias = ["Todos", ...new Set(productosCatalogo.map((producto) => producto.categoria))];
 
-  const barra = document.createElement("div");
-  barra.className = "filtros";
-  barra.setAttribute("role", "group");
-  barra.setAttribute("aria-label", "Filtrar productos por categoría");
+  // el contenedor ya está en index.html (así su espacio queda reservado y la página no salta)
+  const barra = document.getElementById("filtros-categoria");
 
   categorias.forEach((categoria) => {
     const boton = document.createElement("button");
@@ -82,8 +81,6 @@ function crearFiltros() {
     });
     pintarCatalogo();
   });
-
-  contenedorCatalogo.before(barra);
 }
 
 // 2) fetch() le pide el archivo catalogo.json al servidor (aquí simula una API real).
